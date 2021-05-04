@@ -1,10 +1,17 @@
 <html>
   <head>
+    <!-- CSS -->
     <style>
       body {
         font-family: verdana;
         padding: 1rem;
       }
+
+      p {
+        font-size: 1rem;
+        font-weight: 100;
+      }
+
       form {
         border: solid 1px dodgerBlue;
         padding: 1rem;
@@ -28,7 +35,7 @@
         background-color: tomato;
         width: 75px;
         height: 75px;
-        border-radius: 50%;
+        /* border-radius: 50%; */
         display: flex;
         justify-content: center;
         align-items: center;
@@ -37,7 +44,7 @@
       #container > div > span {
         background-color: cornSilk;
         padding: 0.5rem;
-        border-radius: 50%;
+        /* border-radius: 50%; */
       }
 
       #container > div.blue {
@@ -45,69 +52,112 @@
         transition: background-color 1s;
       }
     </style>
+    <!-- HTML -->
     <title>Shape Generator</title>
   </head>
   <body>
-    <h1><a href='index.html'>Shape Generator</a></h1>
+    <h1>
+      <a href="index.html">Shape Generator</a>
+      <p id="count">The number of shapes = 0</p>
+      <p id="average">The average size of the shapes = 0px</p>
+    </h1>
     <h2>Todos</h2>
     <ul>
       <li>Create a repo named shape-generator and add this index.html page</li>
-      <li>Currently clicking on the center of a circle causes the center to disappear. This is a bug, the blue circle should disappear.</li>
       <li>
-        Currently the user can enter anything in the input field. Restrict the input to numbers and limit the values to be greater than 25 and less than 250. 
+        Currently clicking on the center of a circle causes the center to
+        disappear. This is a bug, the blue circle should disappear.
       </li>
       <li>
-        Within the h1 element, display the number of circles which are displayed.
+        Currently the user can enter anything in the input field. Restrict the
+        input to numbers and limit the values to be greater than 25 and less
+        than 250.
       </li>
       <li>
-        Within the h1 element, display the average size of the current circles. 
+        Within the h1 element, display the number of circles which are
+        displayed.
       </li>
       <li>
-        Instead of always generating circles, generate either a circle or a square.
+        Within the h1 element, display the average size of the current circles.
+      </li>
+      <li>
+        Instead of always generating circles, generate either a circle or a
+        square.
       </li>
     </ul>
-    <a href='https://github.com/FullstackAcademy/shape-generator'>Repo</a>
+    <a href="https://github.com/FullstackAcademy/shape-generator">Repo</a>
     <form>
-      <input name='px' value='25'/>
+      <input name="px" value="25" />
     </form>
-    <div id='container'>
-    </div>
-    <script>
-      const form = document.querySelector('form');
-      const input = form.querySelector('input');
-      const link = document.querySelector('a');
-      const container = document.querySelector('#container');
+    <div id="container"></div>
 
-      container.addEventListener('click', (ev)=>{
-        if(!ev.target.id){
-          ev.target.parentNode.removeChild(ev.target);
+    <!-- JAVASCRIPT     -->
+    <script>
+      const form = document.querySelector("form");
+      const input = form.querySelector("input");
+      const link = document.querySelector("a");
+      const container = document.querySelector("#container");
+      const numOfCircles = document.querySelector("#count");
+      const avgOfCircles = document.querySelector("#average");
+      let sumOfInputs = 0;
+
+      container.addEventListener("click", (ev) => {
+        if (!ev.target.parentNode.id) {
+          if (ev.target.parentNode.className === "blue") {
+            ev.target.parentNode.classList.remove("blue");
+            ev.target.parentNode.style.backgroundColor = "white";
+          } else {
+            ev.target.parentNode.remove(ev.target);
+          }
         }
+        numOfCircles.innerText = `The number of shapes = ${container.childNodes.length}`;
+        avgOfCircles.innerText = `The average size of the shapes = ${Number.parseFloat(
+          sumOfInputs / container.childNodes.length
+        ).toFixed(1)}px`;
       });
 
-      const generateCircle = ()=> {
+      const generateCircle = () => {
+        sumOfInputs += parseInt(input.value);
         const size = `${input.value}px`;
-        const circle = document.createElement('div');
+        const circle = document.createElement("div");
         circle.style.width = size;
         circle.style.height = size;
+        if (input.value % 2 === 0) {
+          circle.style.borderRadius = "50%";
+        }
+        if (input.value % 2 !== 0) {
+          circle.style.borderRadius = "0%";
+        }
         container.appendChild(circle);
-        const span = document.createElement('span');
+        const span = document.createElement("span");
         span.innerText = input.value;
+        if (input.value % 2 === 0) {
+          span.style.borderRadius = "50%";
+        }
+        if (input.value % 2 !== 0) {
+          span.style.borderRadius = "0%";
+        }
         circle.appendChild(span);
-        input.value = 25 + Math.floor(Math.random()*50);
-        window.setTimeout(function(){
-          circle.classList.add('blue');
+        input.value = 25 + Math.floor(Math.random() * 50);
+        window.setTimeout(function () {
+          circle.classList.add("blue");
         }, 500);
       };
 
-      form.addEventListener('submit', (ev)=> {
+      form.addEventListener("submit", (ev) => {
         ev.preventDefault();
-        generateCircle();
+        if (input.value >= 25 && input.value <= 250) {
+          generateCircle();
+        } else {
+          alert("Please enter a value between 25 and 250");
+        }
+        numOfCircles.innerText = `The number of shapes = ${container.childNodes.length}`;
+        avgOfCircles.innerText = `The average size of the shapes = ${Number.parseFloat(
+          sumOfInputs / container.childNodes.length
+        ).toFixed(1)}px`;
       });
 
-      generateCircle();
-      generateCircle();
-      generateCircle();
-
+      console.log(container.size);
     </script>
   </body>
 </html>
